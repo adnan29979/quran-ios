@@ -40,8 +40,9 @@ public struct ContentTranslationView: View {
                 verse: { point in viewModel.ayahAtPoint(point) }
             )
         )
+        .task { await viewModel.ensureLoaded() }
         .task(id: Pair(viewModel.verses, viewModel.selectedTranslations)) {
-            await viewModel.load()
+            await viewModel.load(force: true)
         }
     }
 }
