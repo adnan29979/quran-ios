@@ -15,6 +15,7 @@ import Utilities
 
 public struct ContentTranslationView: View {
     @StateObject var viewModel: ContentTranslationViewModel
+    @Environment(\.isQuranVerticalPagesContainer) private var isVerticalPagesContainer
 
     public init(viewModel: @autoclosure @escaping () -> ContentTranslationViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel())
@@ -28,6 +29,7 @@ public struct ContentTranslationView: View {
             highlights: viewModel.highlights,
             scrollToItem: viewModel.scrollToItem,
             tracker: viewModel.tracker,
+            useFeedLayout: isVerticalPagesContainer,
             footnote: $viewModel.footnote,
             openURL: { viewModel.openURL($0) }
         )
@@ -52,19 +54,32 @@ private struct ContentTranslationViewBody: View {
     let highlights: [AyahNumber: Color]
     let scrollToItem: TranslationItemId?
     let tracker: CollectionTracker<TranslationItemId>
+    let useFeedLayout: Bool
 
     @Binding var footnote: TranslationFootnote?
 
     let openURL: (TranslationURL) -> Void
 
     var body: some View {
-        List {
-            ForEach(items) { item in
-                item
+        Group {
+            if useFeedLayout {
+                LazyVStack(spacing: 0, alignment: .leading) {
+                    ForEach(items) { item in
+                        item
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                List {
+                    ForEach(items) { item in
+                        item
+                    }
+                }
+                .listStyle(.plain)
+                .environment(\.defaultMinListRowHeight, 1)
             }
         }
-        .listStyle(.plain)
-        .environment(\.defaultMinListRowHeight, 1)
         .populateReadableInsets()
         .openTranslationURL(openURL)
         .trackCollection(with: tracker)

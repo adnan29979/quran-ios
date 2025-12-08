@@ -63,6 +63,7 @@ public final class ContentViewModel: ObservableObject {
         highlights = deps.highlightsService.highlights
         twoPagesEnabled = deps.quranContentStatePreferences.twoPagesEnabled
         quranMode = deps.quranContentStatePreferences.quranMode
+        verticalScrollingEnabled = deps.quranContentStatePreferences.verticalScrollingEnabled
 
         deps.highlightsService.$highlights
             .sink { [weak self] in self?.highlights = $0 }
@@ -72,6 +73,9 @@ public final class ContentViewModel: ObservableObject {
             .store(in: &cancellables)
         deps.quranContentStatePreferences.$quranMode
             .sink { [weak self] in self?.quranMode = $0 }
+            .store(in: &cancellables)
+        deps.quranContentStatePreferences.$verticalScrollingEnabled
+            .sink { [weak self] in self?.verticalScrollingEnabled = $0 }
             .store(in: &cancellables)
 
         loadNotes()
@@ -110,6 +114,7 @@ public final class ContentViewModel: ObservableObject {
 
     @Published var quranMode: QuranMode
     @Published var twoPagesEnabled: Bool
+    @Published var verticalScrollingEnabled: Bool
     @Published var geometryActions: [PageGeometryActions] = []
 
     @Published var highlights: QuranHighlights {
