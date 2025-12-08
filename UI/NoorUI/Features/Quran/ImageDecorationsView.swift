@@ -27,7 +27,7 @@ public struct ImageDecorations {
     }
 }
 
-struct ImageDecorationsView: View {
+public struct ImageDecorationsView: View {
     private struct SizeInfo: Equatable {
         var imageSize: CGSize
         var viewSize: CGSize

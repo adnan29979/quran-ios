@@ -102,41 +102,34 @@ private struct ContentImageFeedBody: View {
     let onScaleChange: (WordFrameScale) -> Void
     let onGlobalFrameChange: (CGRect) -> Void
 
-    @State private var readableInsets: EdgeInsets = .zero
-
     var body: some View {
         VStack(spacing: 0) {
             QuranPageHeader(quarterName: quarterName, suraNames: suraNames)
-                .padding(.leading, readableInsets.leading)
-                .padding(.trailing, readableInsets.trailing)
 
             if let image {
                 ZStack(alignment: .topLeading) {
                     QuranThemedImage(image: image, renderingMode: renderingMode)
-                        .resizable()
-                        .aspectRatio(image.size, contentMode: .fit)
-                        .background(
-                            ImageDecorationsView(
-                                imageSize: image.size,
-                                decorations: decorations,
-                                onScaleChange: onScaleChange,
-                                onGlobalFrameChange: onGlobalFrameChange
-                            )
-                        )
                         .readableInsetsPadding(.horizontal)
+                        .onGlobalFrameChanged(onGlobalFrameChange)
+
+                    if let wordFrames {
+                        ImageDecorationsView(
+                            imageSize: image.size,
+                            decorations: decorations,
+                            onScaleChange: onScaleChange,
+                            onGlobalFrameChange: onGlobalFrameChange
+                        )
+                        .allowsHitTesting(false)
+                        .readableInsetsPadding(.horizontal)
+                    }
                 }
-                .onSizeChange { size in
-                    onScaleChange(.scaling(imageSize: image.size, into: size))
-                }
-                .onGlobalFrameChanged(onGlobalFrameChange)
+            } else {
+                Color.clear
             }
 
             QuranPageFooter(page: page)
-                .padding(.leading, readableInsets.leading)
-                .padding(.trailing, readableInsets.trailing)
         }
         .font(.footnote)
-        .onReadableInsetsChange { readableInsets = $0 }
         .populateReadableInsets()
         .quranScrolling(scrollToValue: scrollToVerse) {
             wordFrames?.lineFramesVerVerse($0).first

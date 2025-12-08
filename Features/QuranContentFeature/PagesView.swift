@@ -5,6 +5,7 @@
 //  Created by Mohamed Afifi on 2024-10-06.
 //
 
+import NoorUI
 import QuranKit
 import QuranPagesFeature
 import QuranTextKit
