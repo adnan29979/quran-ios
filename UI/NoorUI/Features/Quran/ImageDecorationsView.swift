@@ -92,7 +92,7 @@ public struct ImageDecorationsView: View {
         }
     }
 
-    var body: some View {
+    public var body: some View {
         GeometryReader { g in
             ZStack(alignment: .topLeading) {
                 highlights
