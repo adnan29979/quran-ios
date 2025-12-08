@@ -179,7 +179,12 @@ public final class ContentTranslationViewModel: ObservableObject {
         return items
     }
 
-    func load() async {
+    func ensureLoaded() async {
+        guard !hasLoadedAtLeastOnce else { return }
+        await load(force: false)
+    }
+
+    func load(force: Bool) async {
         do {
             logger.info("Loading translations data; selectedTranslations='\(selectedTranslations)'; verses='\(verses)'")
             let localTranslations = try await localTranslationsRetriever.getLocalTranslations()
@@ -189,6 +194,7 @@ public final class ContentTranslationViewModel: ObservableObject {
             verseTexts = try await dataService.textForVerses(verses, translations: translations)
 
             scrollToVerseIfNeeded()
+            hasLoadedAtLeastOnce = true
         } catch {
             // TODO: should show error to the user
             crasher.recordError(error, reason: "Failed to retrieve quran page details")
@@ -219,6 +225,8 @@ public final class ContentTranslationViewModel: ObservableObject {
     private let localTranslationsRetriever: LocalTranslationsRetriever
     private let selectedTranslationsPreferences = SelectedTranslationsPreferences.shared
     private let fontSizePreferences = FontSizePreferences.shared
+
+    private var hasLoadedAtLeastOnce = false
 
     private func cutoffChunkIfTruncationNeeded(_ string: String) -> Range<String.Index>? {
         guard let maxUntruncatedIndex = string.index(string.startIndex, offsetBy: Self.maxChunkSize, limitedBy: string.endIndex) else {
