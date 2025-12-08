@@ -63,7 +63,7 @@ private struct ContentTranslationViewBody: View {
     var body: some View {
         Group {
             if useFeedLayout {
-                LazyVStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(items) { item in
                         item
                             .frame(maxWidth: .infinity, alignment: .leading)
