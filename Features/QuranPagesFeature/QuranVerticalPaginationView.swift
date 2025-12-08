@@ -9,6 +9,13 @@ import NoorUI
 import QuranKit
 import SwiftUI
 
+private struct VisiblePagePreferenceKey: PreferenceKey {
+    static var defaultValue: [Page.ID: CGFloat] = [:]
+    static func reduce(value: inout [Page.ID: CGFloat], nextValue: () -> [Page.ID: CGFloat]) {
+        value.merge(nextValue()) { $1 }
+    }
+}
+
 public struct QuranVerticalPaginationView<Content: View>: View {
     // MARK: Lifecycle
 
@@ -56,17 +63,11 @@ public struct QuranVerticalPaginationView<Content: View>: View {
 
     // MARK: Private
 
-    private struct VisiblePagePreferenceKey: PreferenceKey {
-        static var defaultValue: [Page.ID: CGFloat] = [:]
-        static func reduce(value: inout [Page.ID: CGFloat], nextValue: () -> [Page.ID: CGFloat]) {
-            value.merge(nextValue()) { $1 }
-        }
-    }
-
     private let coordinateSpaceName = "vertical-scroll"
 
     @Binding private var selection: [Page]
     private let pages: [Page]
+    private let content: (Page) -> Content
 
     @State private var visiblePage: Page?
 
