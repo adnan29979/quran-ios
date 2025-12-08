@@ -112,7 +112,7 @@ private struct ContentImageFeedBody: View {
                         .readableInsetsPadding(.horizontal)
                         .onGlobalFrameChanged(onGlobalFrameChange)
 
-                    if let wordFrames {
+                    if wordFrames != nil {
                         ImageDecorationsView(
                             imageSize: image.size,
                             decorations: decorations,

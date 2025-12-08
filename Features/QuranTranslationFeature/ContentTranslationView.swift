@@ -29,9 +29,9 @@ public struct ContentTranslationView: View {
             highlights: viewModel.highlights,
             scrollToItem: viewModel.scrollToItem,
             tracker: viewModel.tracker,
+            useFeedLayout: isVerticalPagesContainer,
             footnote: $viewModel.footnote,
-            openURL: { viewModel.openURL($0) },
-            useFeedLayout: isVerticalPagesContainer
+            openURL: { viewModel.openURL($0) }
         )
         .geometryActions(
             PageGeometryActions(
