@@ -14,24 +14,41 @@ struct PagesView: View {
     @StateObject var viewModel: ContentViewModel
 
     var body: some View {
-        GeometryReader { geometry in
-            QuranPaginationView(
-                pagingStrategy: pagingStrategy(with: geometry),
-                selection: $viewModel.visiblePages,
-                pages: viewModel.deps.quran.pages
-            ) { page in
-                Group {
-                    switch viewModel.quranMode {
-                    case .arabic:
-                        viewModel.deps.imageDataSourceBuilder.build(at: page)
-                    case .translation:
-                        viewModel.deps.translationDataSourceBuilder.build(at: page)
+        Group {
+            if viewModel.verticalScrollingEnabled {
+                QuranVerticalPaginationView(
+                    selection: $viewModel.visiblePages,
+                    pages: viewModel.deps.quran.pages
+                ) { page in
+                    contentView(for: page)
+                }
+            } else {
+                GeometryReader { geometry in
+                    QuranPaginationView(
+                        pagingStrategy: pagingStrategy(with: geometry),
+                        selection: $viewModel.visiblePages,
+                        pages: viewModel.deps.quran.pages
+                    ) { page in
+                        contentView(for: page)
                     }
+                    .id(viewModel.quranMode)
                 }
             }
-            .id(viewModel.quranMode)
         }
+        .id("\(viewModel.quranMode)-\(viewModel.verticalScrollingEnabled)")
         .collectGeometryActions($viewModel.geometryActions)
+    }
+
+    @ViewBuilder
+    private func contentView(for page: Page) -> some View {
+        Group {
+            switch viewModel.quranMode {
+            case .arabic:
+                viewModel.deps.imageDataSourceBuilder.build(at: page)
+            case .translation:
+                viewModel.deps.translationDataSourceBuilder.build(at: page)
+            }
+        }
     }
 
     private func pagingStrategy(with geometry: GeometryProxy) -> PagingStrategy {
