@@ -27,7 +27,7 @@ public struct ImageDecorations {
     }
 }
 
-struct ImageDecorationsView: View {
+public struct ImageDecorationsView: View {
     private struct SizeInfo: Equatable {
         var imageSize: CGSize
         var viewSize: CGSize
@@ -39,6 +39,18 @@ struct ImageDecorationsView: View {
     let decorations: ImageDecorations
     let onScaleChange: (WordFrameScale) -> Void
     let onGlobalFrameChange: (CGRect) -> Void
+
+    public init(
+        imageSize: CGSize,
+        decorations: ImageDecorations,
+        onScaleChange: @escaping (WordFrameScale) -> Void,
+        onGlobalFrameChange: @escaping (CGRect) -> Void
+    ) {
+        self.imageSize = imageSize
+        self.decorations = decorations
+        self.onScaleChange = onScaleChange
+        self.onGlobalFrameChange = onGlobalFrameChange
+    }
 
     var scale: WordFrameScale {
         WordFrameScale.scaling(imageSize: sizeInfo.imageSize, into: sizeInfo.viewSize)
@@ -92,7 +104,7 @@ struct ImageDecorationsView: View {
         }
     }
 
-    var body: some View {
+    public var body: some View {
         GeometryReader { g in
             ZStack(alignment: .topLeading) {
                 highlights

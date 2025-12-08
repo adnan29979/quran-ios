@@ -84,6 +84,7 @@ private struct MoreMenuRootView: View {
 
                     viewBasedOn(state.verticalScrolling) {
                         MoreMenuVerticalScrolling(enabled: $store.verticalScrollingEnabled)
+                            .background(Color.systemBackground)
                     }
 
                     viewBasedOn(state.theme) {

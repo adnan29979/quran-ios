@@ -92,6 +92,8 @@
 "menu.twoPages" = "2 páginas una al lado de la otra (en paisaje)";
 // Metadata: Translated by ChatGPT; human review required.
 "menu.verticalScrolling" = "Desplazamiento vertical";
+"menu.horizontalScrolling" = "Desplazamiento horizontal";
+"menu.scrollDirection" = "Dirección de desplazamiento";
 // Metadata: Translated by ChatGPT; human review required.
 "menu.theme_settings" = "Temas y configuraciones";
 

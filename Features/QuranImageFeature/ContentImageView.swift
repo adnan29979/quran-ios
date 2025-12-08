@@ -13,21 +13,37 @@ import SwiftUI
 
 struct ContentImageView: View {
     @StateObject var viewModel: ContentImageViewModel
+    @Environment(\.isQuranVerticalPagesContainer) private var isVerticalPagesContainer
 
     var body: some View {
         VStack {
-            ContentImageViewBody(
-                decorations: viewModel.decorations,
-                image: viewModel.imagePage?.image,
-                renderingMode: viewModel.imageRenderingMode,
-                quarterName: viewModel.page.localizedQuarterName,
-                suraNames: viewModel.page.suraNames(),
-                page: viewModel.page.localizedNumber,
-                scrollToVerse: viewModel.scrollToVerse,
-                wordFrames: viewModel.imagePage?.wordFrames,
-                onScaleChange: { viewModel.scale = $0 },
-                onGlobalFrameChange: { viewModel.imageFrame = $0 }
-            )
+            if isVerticalPagesContainer {
+                ContentImageFeedBody(
+                    decorations: viewModel.decorations,
+                    image: viewModel.imagePage?.image,
+                    renderingMode: viewModel.imageRenderingMode,
+                    quarterName: viewModel.page.localizedQuarterName,
+                    suraNames: viewModel.page.suraNames(),
+                    page: viewModel.page.localizedNumber,
+                    scrollToVerse: viewModel.scrollToVerse,
+                    wordFrames: viewModel.imagePage?.wordFrames,
+                    onScaleChange: { viewModel.scale = $0 },
+                    onGlobalFrameChange: { viewModel.imageFrame = $0 }
+                )
+            } else {
+                ContentImageViewBody(
+                    decorations: viewModel.decorations,
+                    image: viewModel.imagePage?.image,
+                    renderingMode: viewModel.imageRenderingMode,
+                    quarterName: viewModel.page.localizedQuarterName,
+                    suraNames: viewModel.page.suraNames(),
+                    page: viewModel.page.localizedNumber,
+                    scrollToVerse: viewModel.scrollToVerse,
+                    wordFrames: viewModel.imagePage?.wordFrames,
+                    onScaleChange: { viewModel.scale = $0 },
+                    onGlobalFrameChange: { viewModel.imageFrame = $0 }
+                )
+            }
         }
         .geometryActions(
             PageGeometryActions(
@@ -64,6 +80,53 @@ private struct ContentImageViewBody: View {
         } header: {
             QuranPageHeader(quarterName: quarterName, suraNames: suraNames)
         } footer: {
+            QuranPageFooter(page: page)
+        }
+        .font(.footnote)
+        .populateReadableInsets()
+        .quranScrolling(scrollToValue: scrollToVerse) {
+            wordFrames?.lineFramesVerVerse($0).first
+        }
+    }
+}
+
+private struct ContentImageFeedBody: View {
+    let decorations: ImageDecorations
+    let image: UIImage?
+    let renderingMode: QuranThemedImage.RenderingMode
+    let quarterName: String
+    let suraNames: MultipartText
+    let page: String
+    let scrollToVerse: AyahNumber?
+    let wordFrames: WordFrameCollection?
+    let onScaleChange: (WordFrameScale) -> Void
+    let onGlobalFrameChange: (CGRect) -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            QuranPageHeader(quarterName: quarterName, suraNames: suraNames)
+
+            if let image {
+                ZStack(alignment: .topLeading) {
+                    QuranThemedImage(image: image, renderingMode: renderingMode)
+                        .readableInsetsPadding(.horizontal)
+                        .onGlobalFrameChanged(onGlobalFrameChange)
+
+                    if wordFrames != nil {
+                        ImageDecorationsView(
+                            imageSize: image.size,
+                            decorations: decorations,
+                            onScaleChange: onScaleChange,
+                            onGlobalFrameChange: onGlobalFrameChange
+                        )
+                        .allowsHitTesting(false)
+                        .readableInsetsPadding(.horizontal)
+                    }
+                }
+            } else {
+                Color.clear
+            }
+
             QuranPageFooter(page: page)
         }
         .font(.footnote)
