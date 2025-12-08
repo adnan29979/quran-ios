@@ -41,6 +41,7 @@ public struct ContentTranslationView: View {
             )
         )
         .task { await viewModel.ensureLoaded() }
+        .onAppear { Task { await viewModel.ensureLoaded() } }
         .task(id: Pair(viewModel.verses, viewModel.selectedTranslations)) {
             await viewModel.load(force: true)
         }
@@ -64,7 +65,7 @@ private struct ContentTranslationViewBody: View {
     var body: some View {
         Group {
             if useFeedLayout {
-                VStack(alignment: .leading, spacing: 0) {
+                LazyVStack(alignment: .leading, spacing: 0) {
                     ForEach(items) { item in
                         item
                             .frame(maxWidth: .infinity, alignment: .leading)
