@@ -5,6 +5,7 @@
 //  Created by Mohamed Afifi on 2024-10-06.
 //
 
+import QuranKit
 import QuranPagesFeature
 import QuranTextKit
 import SwiftUI
