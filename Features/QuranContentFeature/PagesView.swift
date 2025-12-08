@@ -36,6 +36,7 @@ struct PagesView: View {
                 }
             }
         }
+        .environment(\.isQuranVerticalPagesContainer, viewModel.verticalScrollingEnabled)
         .id("\(viewModel.quranMode)-\(viewModel.verticalScrollingEnabled)")
         .collectGeometryActions($viewModel.geometryActions)
     }
