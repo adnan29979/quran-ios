@@ -40,6 +40,18 @@ public struct ImageDecorationsView: View {
     let onScaleChange: (WordFrameScale) -> Void
     let onGlobalFrameChange: (CGRect) -> Void
 
+    public init(
+        imageSize: CGSize,
+        decorations: ImageDecorations,
+        onScaleChange: @escaping (WordFrameScale) -> Void,
+        onGlobalFrameChange: @escaping (CGRect) -> Void
+    ) {
+        self.imageSize = imageSize
+        self.decorations = decorations
+        self.onScaleChange = onScaleChange
+        self.onGlobalFrameChange = onGlobalFrameChange
+    }
+
     var scale: WordFrameScale {
         WordFrameScale.scaling(imageSize: sizeInfo.imageSize, into: sizeInfo.viewSize)
     }
