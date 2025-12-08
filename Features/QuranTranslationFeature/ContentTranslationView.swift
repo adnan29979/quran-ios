@@ -70,6 +70,7 @@ private struct ContentTranslationViewBody: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .readableInsetsPadding(.horizontal)
             } else {
                 List {
                     ForEach(items) { item in
